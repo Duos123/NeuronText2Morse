@@ -42,7 +42,6 @@ void encode(char c){
       sendDash();
     }
   }
-
 }
 
 String getMorseCode(char c) {
