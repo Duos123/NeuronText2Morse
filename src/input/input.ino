@@ -9,15 +9,16 @@ void setup() {
   pinMode(d11, OUTPUT);
   pinMode(d12, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(9600);
-  Serial.println("Input:");
+  // Serial.begin(9600);
+  // Serial.println("Input:");
 }
 
 void loop() {
-  if(Serial.available() == 0) return;
+  // if(Serial.available() == 0) return;
 
-  String input = Serial.readStringUntil('\n');
-  input.toUpperCase();
+  // String input = Serial.readStringUntil('\n');
+  // input.toUpperCase();
+  String input = "C"; //  "-.-."
   
   for (int i = 0; i < input.length(); i++) {
     char c = input.charAt(i);
@@ -26,11 +27,13 @@ void loop() {
     if(c == ' ') delay(wordDelay);
     else {
       encode(c);
-      delay(charDelay);
+
+      if(i != input.length() -1)
+        delay(charDelay);
     }
   }
 
-  Serial.println("End!");
+  // Serial.println("End!");
 }
 
 void encode(char c){
