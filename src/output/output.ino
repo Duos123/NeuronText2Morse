@@ -36,3 +36,40 @@ void loop() {
 
   delay(10); // Kleines Delay für bessere Darstellung (10 ms)
 }
+
+// Ich brauche noch Funktionenn: 
+String getMorseChar(String morse) {
+  if (morse == ".-") return "A";
+  if (morse == "-...") return "B";
+  if (morse == "-.-.") return "C";
+  if (morse == "-..") return "D";
+  if (morse == ".") return "E";
+  if (morse == "..-.") return "F";
+  if (morse == "--.") return "G";
+  if (morse == "....") return "H";
+  if (morse == "..") return "I";
+  if (morse == ".---") return "J";
+  if (morse == "-.-") return "K";
+  if (morse == ".-..") return "L";
+  if (morse == "--") return "M";
+  if (morse == "-.") return "N";
+  if (morse == "---") return "O";
+  if (morse == ".--.") return "P";
+  if (morse == "--.-") return "Q";
+  if (morse == ".-.") return "R";
+  if (morse == "...") return "S";
+  if (morse == "-") return "T";
+  if (morse == "..-") return "U";
+  if (morse == "...-") return "V";
+  if (morse == ".--") return "W";
+  if (morse == "-..-") return "X";
+  if (morse == "-.--") return "Y";
+  if (morse == "--..") return "Z";
+  return "";
+}
+
+bool char_end()
+
+void decode_word() {
+
+}
