@@ -3,7 +3,7 @@ const int d12 = 12;  // Pin connected to W1 on 'dash' board
 const int baseDelay = 1000;
 const int dashDelay = baseDelay * 3;
 const int charDelay = baseDelay * 5;
-const int wordDelay = baseDelay * 25;
+const int wordDelay = baseDelay * 10;
 
 void setup() {
   pinMode(d11, OUTPUT);
@@ -17,17 +17,16 @@ void loop() {
 
   // String input = Serial.readStringUntil('\n');
   // input.toUpperCase();
-  String input = "D";  //  "-.."
+  String input = "DAS IST EIN INPUT TEXT";  //  "-.."
 
   for (int i = 0; i < input.length(); i++) {
     char c = input.charAt(i);
-    if (!isAlpha(c)) continue;
+    //if (!isAlpha(c)) continue;
+    Serial.println(c);
 
-    if (c == ' ') delay(wordDelay);
-    else {
       encode(c);
       delay(charDelay);
-    }
+    
   }
 
   // Serial.println("End!");
@@ -72,6 +71,7 @@ String getMorseCode(char c) {
     case 'X': return "-..-";
     case 'Y': return "-.--";
     case 'Z': return "--..";
+    case ' ': return ".....";
     default: return "";
   }
 }
