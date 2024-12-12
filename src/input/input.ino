@@ -13,16 +13,16 @@ void setup() {
 }
 
 void loop() {
-  // if(Serial.available() == 0) return;
+  
+  if(Serial.available() == 0) return;
 
-  // String input = Serial.readStringUntil('\n');
-  // input.toUpperCase();
-  String input = "DAS IST EIN INPUT TEXT";  //  "-.."
+  String input = Serial.readStringUntil('\n');
+  input.toUpperCase();
+
 
   for (int i = 0; i < input.length(); i++) {
     char c = input.charAt(i);
     //if (!isAlpha(c)) continue;
-    Serial.println(c);
 
       encode(c);
       delay(charDelay);
