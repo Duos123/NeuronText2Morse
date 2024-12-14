@@ -1,40 +1,37 @@
-const int d11 = 11;  // Pin connected to W1 on 'dot' board
-const int d12 = 12;  // Pin connected to W1 on 'dash' board
-const int baseDelay = 1000;
-const int dashDelay = baseDelay * 3;
-const int charDelay = baseDelay * 5;
-const int wordDelay = baseDelay * 10;
+const uint DOT_PIN = 11;
+const uint DASH_PIN = 12;
+
+const uint BASE_DELAY = 250;
+const uint DOT_DELAY = BASE_DELAY;
+const uint DASH_DELAY = BASE_DELAY * 3;
+const uint CHAR_DELAY = DASH_DELAY;
 
 void setup() {
-  pinMode(d11, OUTPUT);
-  pinMode(d12, OUTPUT);
-  // Serial.begin(9600);
-  // Serial.println("Input:");
+  pinMode(DOT_PIN, OUTPUT);
+  pinMode(DASH_PIN, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  
-  if(Serial.available() == 0) return;
+  if (Serial.available() == 0) return;
 
   String input = Serial.readStringUntil('\n');
   input.toUpperCase();
 
-
-  for (int i = 0; i < input.length(); i++) {
+  for (uint i = 0; i < input.length(); i++) {
     char c = input.charAt(i);
-    //if (!isAlpha(c)) continue;
+    Serial.println(c);
 
-      encode(c);
-      delay(charDelay);
-    
+    encode(c);
+    delay(CHAR_DELAY);
   }
-
-  // Serial.println("End!");
 }
 
 void encode(char c) {
-  String code = getMorseCode(c);
-  for (int i = 0; i < code.length(); i++) {
+  const char* code = getMorseCode(c);
+  if (code == nullptr) return;
+
+  for (uint i = 0; code[i] != '\0'; i++) {
     if (code[i] == '.') {
       sendDot();
     } else if (code[i] == '-') {
@@ -43,7 +40,7 @@ void encode(char c) {
   }
 }
 
-String getMorseCode(char c) {
+const char* getMorseCode(char c) {
   switch (c) {
     case 'A': return ".-";
     case 'B': return "-...";
@@ -71,22 +68,21 @@ String getMorseCode(char c) {
     case 'X': return "-..-";
     case 'Y': return "-.--";
     case 'Z': return "--..";
-    case ' ': return ".....";
-    default: return "";
+    case ' ': return ".......";
+    default: return nullptr;
   }
 }
 
-
 void sendDot() {
-  digitalWrite(d11, HIGH);
-  delay(baseDelay);
-  digitalWrite(d11, LOW);
-  delay(baseDelay);
+  digitalWrite(DOT_PIN, HIGH);
+  delay(DOT_DELAY);
+  digitalWrite(DOT_PIN, LOW);
+  delay(BASE_DELAY);
 }
 
 void sendDash() {
-  digitalWrite(d12, HIGH);
-  delay(dashDelay);
-  digitalWrite(d12, LOW);
-  delay(baseDelay);
+  digitalWrite(DASH_PIN, HIGH);
+  delay(DASH_DELAY);
+  digitalWrite(DASH_PIN, LOW);
+  delay(BASE_DELAY);
 }

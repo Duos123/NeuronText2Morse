@@ -1,39 +1,98 @@
-const int sensorPin1 = A6; // Erster Lichtsensor an Pin A6
-const int sensorPin2 = A7; // Zweiter Lichtsensor an Pin A7
-int sensorValue1 = 0;      // Variable für den gelesenen Wert des ersten Sensors
-int sensorValue2 = 0;      // Variable für den gelesenen Wert des zweiten Sensors
-float smoothedValue1 = 0;  // Geglätteter Wert des ersten Sensors
-float smoothedValue2 = 0;  // Geglätteter Wert des zweiten Sensors
-const int smoothingFactor = 10; // Anzahl der Werte für den gleitenden Durchschnitt
+const uint DOT_PIN = A7;
+const uint DASH_PIN = A6;
+
+const uint BASE_DELAY = 250;
+const uint DOT_DELAY = BASE_DELAY;
+const uint DASH_DELAY = BASE_DELAY * 3;
+const uint CHAR_DELAY = DASH_DELAY;
+
+volatile bool isDot = false;
+volatile bool isDash = false;
+
+uint dotSignals = 0;
+uint dashSignals = 0;
+
+unsigned long baseMillis = 0;
+unsigned long charMillis = 0;
+
+String morse = "";
+
+void setDot() {
+  isDot = true;
+}
+
+void setDash() {
+  isDash = true;
+}
 
 void setup() {
-  Serial.begin(9600); // Seriellen Monitor starten
-  pinMode(sensorPin1, INPUT); // Ersten Sensor-Pin als Eingang definieren
-  pinMode(sensorPin2, INPUT); // Zweiten Sensor-Pin als Eingang definieren
-  Serial.println("Time(ms),Voltage1(V),Voltage2(V)"); // Header für CSV-Datei
+  pinMode(DOT_PIN, INPUT);
+  pinMode(DASH_PIN, INPUT);
+  Serial.begin(9600);
+
+  attachInterrupt(digitalPinToInterrupt(DOT_PIN), setDot, RISING);
+  attachInterrupt(digitalPinToInterrupt(DASH_PIN), setDash, RISING);
 }
 
 void loop() {
-  // Werte von den Sensoren lesen (0-1023)
-  sensorValue1 = analogRead(sensorPin1);
-  sensorValue2 = analogRead(sensorPin2);
+  unsigned long currentMillis = millis();
 
-  // Gleitenden Durchschnitt berechnen
-  smoothedValue1 = (smoothedValue1 * (smoothingFactor - 1) + sensorValue1) / smoothingFactor;
-  smoothedValue2 = (smoothedValue2 * (smoothingFactor - 1) + sensorValue2) / smoothingFactor;
+  if (morse != "" && currentMillis - charMillis >= CHAR_DELAY) {
+    char c = getMorseChar(morse);
+    if (c != '_') {
+      Serial.print(c);
+    }
+    morse = "";
+  }
 
-  // Spannungen berechnen (bei einem 10-Bit-ADC und 5V Versorgung)
-  float voltage1 = sensorValue1 / 1023.0;
-  float voltage2 = sensorValue2/ 1023.0;
+  if (currentMillis - baseMillis >= BASE_DELAY) {
+    if (isDot) {
+      dotSignals++;
+      charMillis = currentMillis;
+    } else if (dotSignals > 0) {
+      for (uint i = 0; i < dotSignals / 2; i++) {
+        morse += '.';
+      }
+      dotSignals = 0;
+    }
 
-  // Zeitstempel und Spannungen ausgeben (CSV-Format)
-  unsigned long currentTime = millis();
-  Serial.print(currentTime); 
-  Serial.print(",");
-  Serial.print(voltage1, 3); // Voltage1 auf 3 Dezimalstellen
-  Serial.print(",");
-  Serial.println(voltage2, 3); // Voltage2 auf 3 Dezimalstellen
+    if (isDash) {
+      dashSignals++;
+      charMillis = currentMillis;
+    } else if (dashSignals > 0) {
+      for (uint i = 0; i < dashSignals / 4; i++) {
+        morse += '-';
+      }
+      dashSignals = 0;
+    }
 
-  delay(10); // Kleines Delay für bessere Darstellung (10 ms)
+    isDot = false;
+    isDash = false;
+    baseMillis = currentMillis;
+  }
 }
 
+
+char getMorseChar(const String &morse) {
+  static const char *morseTable[] = {
+    ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....",
+    "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.",
+    "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-",
+    "-.--", "--..", "......."
+  };
+
+  static const char charTable[] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+    'Y', 'Z', ' '
+  };
+
+  for (int i = 0; i < 27; i++) {
+    if (morse == morseTable[i]) {
+      return charTable[i];
+    }
+  }
+
+  return '_';
+}
