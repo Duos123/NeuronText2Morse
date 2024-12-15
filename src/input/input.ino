@@ -17,9 +17,11 @@ void loop() {
 
   String input = Serial.readStringUntil('\n');
   input.toUpperCase();
+  Serial.println("Received input: " + input);
 
   for (uint i = 0; i < input.length(); i++) {
     char c = input.charAt(i);
+    Serial.print("\n\tEncoding character: ");
     Serial.println(c);
 
     encode(c);
@@ -29,12 +31,23 @@ void loop() {
 
 void encode(char c) {
   const char* code = getMorseCode(c);
-  if (code == nullptr) return;
+  if (code == nullptr) {
+    Serial.print("\tCharacter not supported: ");
+    Serial.println(c);
+    return;
+  }
+
+  Serial.print("\tMorse code for ");
+  Serial.print(c);
+  Serial.print(": ");
+  Serial.println(code);
 
   for (uint i = 0; code[i] != '\0'; i++) {
     if (code[i] == '.') {
+      Serial.println("\t\tSending DOT");
       sendDot();
     } else if (code[i] == '-') {
+      Serial.println("\t\tSending DASH");
       sendDash();
     }
   }
