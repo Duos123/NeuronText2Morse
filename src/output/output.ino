@@ -1,10 +1,13 @@
 const uint DOT_PIN = A7;
 const uint DASH_PIN = A6;
 
-const uint BASE_DELAY = 250;
-const uint DOT_DELAY = BASE_DELAY;
-const uint DASH_DELAY = BASE_DELAY * 3;
-const uint CHAR_DELAY = DASH_DELAY;
+const unsigned long BASE_DELAY = 250;
+const unsigned long SAFETY_MARGIN = BASE_DELAY / 5;
+const unsigned long DOT_DELAY = BASE_DELAY - SAFETY_MARGIN;
+const unsigned long DASH_DELAY = BASE_DELAY * 3 - SAFETY_MARGIN;
+const unsigned long CHAR_DELAY = DASH_DELAY;
+
+const bool DEBUG = true;
 
 volatile bool isDot = false;
 volatile bool isDash = false;
@@ -40,26 +43,38 @@ void loop() {
   unsigned long currentMillis = millis();
 
   if (text != "" && currentMillis - endMillis >= CHAR_DELAY * 2) {
-    Serial.print("-> Decoded text: ");
-    Serial.print(text);
-    Serial.println();
+    if (DEBUG) {
+      Serial.print("-> Decoded text: ");
+      Serial.print(text);
+      Serial.println();
+    }
     text = "";
   }
 
   if (morse != "" && currentMillis - charMillis >= CHAR_DELAY) {
-    Serial.print("\tNo signals in ");
-    Serial.print(CHAR_DELAY);
-    Serial.println("ms");
+    if (DEBUG) {
+      Serial.print("\tNo signals in ");
+      Serial.print(CHAR_DELAY);
+      Serial.println("ms");
+    }
 
     char c = getMorseChar(morse);
     if (c != '_') {
-      Serial.print("\tDecoded character: ");
-      Serial.println(c);
+      if (DEBUG) {
+        Serial.print("\tDecoded character: ");
+        Serial.println(c);
+      } else {
+        Serial.print(c);
+      }
       text += c;
     } else {
-      Serial.println("\tInvalid Morse sequence received.");
+      if (DEBUG) {
+        Serial.println("\tInvalid Morse sequence received.");
+      }
     }
-    Serial.println();
+    if (DEBUG) {
+      Serial.println();
+    }
     morse = "";
     endMillis = currentMillis;
   }
@@ -74,13 +89,15 @@ void loop() {
         morse += '.';
       }
 
-      Serial.print("Recieved ");
-      Serial.print(dotSignals);
-      Serial.println(" DOT signals.");
+      if (DEBUG) {
+        Serial.print("Recieved ");
+        Serial.print(dotSignals);
+        Serial.println(" DOT signals.");
 
-      Serial.print("\tCurrent sequence: ");
-      Serial.println(morse);
-      Serial.println();
+        Serial.print("\tCurrent sequence: ");
+        Serial.println(morse);
+        Serial.println();
+      }
 
       dotSignals = 0;
     }
@@ -94,13 +111,15 @@ void loop() {
         morse += '-';
       }
 
-      Serial.print("Recieved ");
-      Serial.print(dashSignals);
-      Serial.println(" DASH signals.");
+      if (DEBUG) {
+        Serial.print("Recieved ");
+        Serial.print(dashSignals);
+        Serial.println(" DASH signals.");
 
-      Serial.print("\tCurrent sequence: ");
-      Serial.println(morse);
-      Serial.println();
+        Serial.print("\tCurrent sequence: ");
+        Serial.println(morse);
+        Serial.println();
+      }
 
       dashSignals = 0;
     }
@@ -126,7 +145,7 @@ char getMorseChar(const String &morse) {
     'Y', 'Z', ' '
   };
 
-  for (int i = 0; i < 27; i++) {
+  for (uint i = 0; i < 27; i++) {
     if (morse == morseTable[i]) {
       return charTable[i];
     }
