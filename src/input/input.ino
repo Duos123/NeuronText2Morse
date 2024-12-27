@@ -1,5 +1,5 @@
-const uint DOT_PIN = 11;
-const uint DASH_PIN = 12;
+const uint DOT_PIN = D11;
+const uint DASH_PIN = D12;
 
 const unsigned long BASE_DELAY = 250;
 const unsigned long DOT_DELAY = BASE_DELAY;
@@ -34,6 +34,10 @@ void loop() {
 
     encode(c);
     delay(CHAR_DELAY);
+  }
+
+  if (DEBUG) {
+    Serial.println("\nFinished sending: " + input);
   }
 }
 

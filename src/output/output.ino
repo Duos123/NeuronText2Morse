@@ -1,10 +1,10 @@
 const uint DOT_PIN = A7;
 const uint DASH_PIN = A6;
 
-const unsigned long BASE_DELAY = 250;
-const unsigned long SAFETY_MARGIN = BASE_DELAY / 5;
-const unsigned long DOT_DELAY = BASE_DELAY - SAFETY_MARGIN;
-const unsigned long DASH_DELAY = BASE_DELAY * 3 - SAFETY_MARGIN;
+const unsigned long SAFETY_MARGIN = 50;
+const unsigned long BASE_DELAY = 250 - SAFETY_MARGIN;
+const unsigned long DOT_DELAY = BASE_DELAY;
+const unsigned long DASH_DELAY = BASE_DELAY * 3;
 const unsigned long CHAR_DELAY = DASH_DELAY;
 
 const bool DEBUG = true;
@@ -31,8 +31,8 @@ void setDash() {
 }
 
 void setup() {
-  pinMode(DOT_PIN, INPUT);
-  pinMode(DASH_PIN, INPUT);
+  pinMode(DOT_PIN, INPUT_PULLUP);
+  pinMode(DASH_PIN, INPUT_PULLUP);
   Serial.begin(9600);
 
   attachInterrupt(digitalPinToInterrupt(DOT_PIN), setDot, RISING);
@@ -70,6 +70,8 @@ void loop() {
     } else {
       if (DEBUG) {
         Serial.println("\tInvalid Morse sequence received.");
+      } else {
+        Serial.print(c);
       }
     }
     if (DEBUG) {
