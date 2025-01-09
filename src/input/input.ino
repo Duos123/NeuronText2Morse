@@ -1,7 +1,7 @@
 const uint DOT_PIN = D11;
 const uint DASH_PIN = D12;
 
-const unsigned long BASE_DELAY = 250;
+const unsigned long BASE_DELAY = 300;
 const unsigned long DOT_DELAY = BASE_DELAY;
 const unsigned long DASH_DELAY = BASE_DELAY * 3;
 const unsigned long CHAR_DELAY = DASH_DELAY;
