@@ -24,8 +24,8 @@ To run this project, you will need:
 - 2 LU.I boards  
 - 2 Arduino boards  
 
-### Gettin Started
+### Getting Started
 
 ### Note
 
-There is a [demo](https://chubetho.github.io/Text2MorseWeb/) for this project when there is no Arduino Nano or Lu.i board.
+There is a [demo](https://chubetho.github.io/NeuronText2MorseWebApp/) for this project when there is no Arduino Nano or Lu.i board.
