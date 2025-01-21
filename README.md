@@ -2,8 +2,6 @@
 
 Implement Text-to-Morse and Morse-to-Text conversion using two Arduino Nano BLE 33 boards and two Lu.i boards.
 
-![Video](figures/video.mp4)
-
 https://github.com/user-attachments/assets/ed819064-9fd6-46a6-b6ce-5030dc234cb1
 
 ### Welcome
