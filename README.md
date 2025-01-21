@@ -6,4 +6,4 @@ Implement Text-to-Morse and Morse-to-Text conversion using two Arduino Nano BLE 
 
 ### Note
 
-There is a [demo](https://github.com/chubetho/Text2MorseWeb) for this project when there is no Arduino Nano or Lu.i board  .
+There is a [demo](https://chubetho.github.io/Text2MorseWeb/) for this project when there is no Arduino Nano or Lu.i board  .
