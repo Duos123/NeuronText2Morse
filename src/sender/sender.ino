@@ -1,17 +1,17 @@
-const uint DOT_PIN = D11;
-const uint DASH_PIN = D12;
+const uint DOT_PIN = D11;   // Digital pin 11
+const uint DASH_PIN = D12;  // Digital pin 12
 
-const unsigned long BASE_DELAY = 300;
+const unsigned long BASE_DELAY = 300;  // 300ms
 const unsigned long DOT_DELAY = BASE_DELAY;
 const unsigned long DASH_DELAY = BASE_DELAY * 3;
 const unsigned long CHAR_DELAY = DASH_DELAY;
 
-const bool DEBUG = true;
+const bool DEBUG = true;  // Verbose mode
 
 void setup() {
-  pinMode(DOT_PIN, OUTPUT);
-  pinMode(DASH_PIN, OUTPUT);
-  Serial.begin(9600);
+  pinMode(DOT_PIN, OUTPUT);   // Set DOT_PIN as an output
+  pinMode(DASH_PIN, OUTPUT);  // Set DASH_PIN as an output
+  Serial.begin(9600);         // Initializes serial communication.
 }
 
 void loop() {
@@ -106,6 +106,10 @@ const char* getMorseCode(char c) {
   }
 }
 
+/*
+ * Sends a dot signal by setting the DOT_PIN high for a specified duration.
+ * Then, it resets the pin and waits for the base delay before the next signal.
+ */
 void sendDot() {
   digitalWrite(DOT_PIN, HIGH);
   delay(DOT_DELAY);
@@ -113,6 +117,10 @@ void sendDot() {
   delay(BASE_DELAY);
 }
 
+/*
+ * Sends a dash signal by setting the DASH_PIN high for a specified duration.
+ * Then, it resets the pin and waits for the base delay before the next signal.
+ */
 void sendDash() {
   digitalWrite(DASH_PIN, HIGH);
   delay(DASH_DELAY);

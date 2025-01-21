@@ -1,12 +1,12 @@
-const uint DOT_PIN = A7;
-const uint DASH_PIN = A6;
+const uint DOT_PIN = A7;   // Analog pin 7
+const uint DASH_PIN = A6;  // Analog pin 6
 
-const unsigned long BASE_DELAY = 300;
+const unsigned long BASE_DELAY = 300;  // 300ms
 const unsigned long DOT_DELAY = BASE_DELAY;
 const unsigned long DASH_DELAY = BASE_DELAY * 3;
 const unsigned long CHAR_DELAY = DASH_DELAY;
 
-const bool DEBUG = true;
+const bool DEBUG = true;  // Verbose mode
 
 volatile bool isDot = false;
 volatile bool isDash = false;
@@ -30,10 +30,14 @@ void setDash() {
 }
 
 void setup() {
-  pinMode(DOT_PIN, INPUT_PULLUP);
-  pinMode(DASH_PIN, INPUT_PULLUP);
-  Serial.begin(9600);
+  pinMode(DOT_PIN, INPUT_PULLUP);   // Set DOT_PIN as an input
+  pinMode(DASH_PIN, INPUT_PULLUP);  // Set DASH_PIN as an input
+  Serial.begin(9600);               // Initializes serial communication.
 
+  /*
+  * Attach interrupts to DOT_PIN and DASH_PIN.
+  * When a rising signal is detected, the corresponding function is executed.
+  */
   attachInterrupt(digitalPinToInterrupt(DOT_PIN), setDot, RISING);
   attachInterrupt(digitalPinToInterrupt(DASH_PIN), setDash, RISING);
 }
@@ -41,6 +45,9 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
 
+  /*
+   * If no signals are received for CHAR_DELAY * 2, consider it the end of the text.
+   */
   if (text != "" && currentMillis - endMillis >= CHAR_DELAY * 2) {
     if (DEBUG) {
       Serial.print("-> Decoded text: ");
@@ -50,6 +57,9 @@ void loop() {
     text = "";
   }
 
+  /*
+   * If no signals are received for CHAR_DELAY, consider it the end of a character.
+   */
   if (morse != "" && currentMillis - charMillis >= CHAR_DELAY) {
     if (DEBUG) {
       Serial.print("\tNo signals in ");
@@ -80,12 +90,16 @@ void loop() {
     endMillis = currentMillis;
   }
 
+  /*
+   * Check for new signals every BASE_DELAY interval.
+   */
   if (currentMillis - baseMillis >= BASE_DELAY) {
     if (isDot) {
       dotSignals++;
       charMillis = currentMillis;
       endMillis = currentMillis;
     } else if (dotSignals > 0) {
+      // Convert collected dot signals into Morse code dots.
       for (uint i = 0; i < dotSignals / 2; i++) {
         morse += '.';
       }
@@ -108,6 +122,7 @@ void loop() {
       charMillis = currentMillis;
       endMillis = currentMillis;
     } else if (dashSignals > 0) {
+      // Convert collected dash signals into Morse code dashes.
       for (uint i = 0; i < dashSignals / 4; i++) {
         morse += '-';
       }
@@ -125,6 +140,7 @@ void loop() {
       dashSignals = 0;
     }
 
+    // Reset
     isDot = false;
     isDash = false;
     baseMillis = currentMillis;
